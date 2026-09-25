@@ -1,0 +1,27 @@
+name: Printer report
+description: Tried teip on a printer? Tell us what worked, so the compatibility table can say so.
+title: "Printer report: <model>"
+labels: [printer-report]
+body:
+  - type: input
+    id: model
+    attributes: {label: Printer model, placeholder: PT-P700}
+    validations: {required: true}
+  - type: dropdown
+    id: how
+    attributes:
+      label: Connected how
+      options: [teip server over USB (Raspberry Pi / Linux), teip server over USB (Windows), Browser over USB (WebUSB), Browser over Bluetooth (Web Serial)]
+    validations: {required: true}
+  - type: checkboxes
+    id: works
+    attributes:
+      label: What worked
+      options:
+        - label: Status (tape width shows up)
+        - label: Single label prints
+        - label: Batch prints with half cuts between labels
+        - label: Chain printing
+  - type: textarea
+    id: notes
+    attributes: {label: What went wrong, or anything else, description: "OS, browser, tape width, error messages, a photo of the label."}

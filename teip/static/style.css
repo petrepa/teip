@@ -1,0 +1,766 @@
+/* teip — house style (base.css from the sandbox style guide), lime accent.
+ *
+ * Extracted from Von and Spor, which are the reference implementations. Copy this
+ * file into a new app's public/ as-is, set the two accent blocks below to the app's
+ * registered accent (see ../STYLEGUIDE.md), and put app-specific rules in a second
+ * file or below the line at the end. Don't fork the tokens.
+ *
+ * No cards, no shadows, no gradients, no rounded chrome, no decorative colour.
+ * Hairline rules and whitespace do the structuring. Every text/background pair
+ * clears 7:1 (WCAG AAA) in both themes — check with styleguide/contrast.mjs.
+ */
+
+:root {
+  color-scheme: dark light;
+
+  --base: #0b0b0c;
+  --text: #f5f6f7; /* 18.2:1 */
+  --muted: #b9bfc7; /* 10.6:1 — secondary text, never decorative grey */
+  --faint: #9ba2ac; /*  7.6:1 — the quietest text allowed */
+  --rule: #33383f; /* hairlines; non-text, so contrast rules don't apply */
+  --rule-hi: #4d545d;
+  --field: #17181b;
+  --accent: #dcef5a; /* teip: lime, registered in the style guide */
+  --accent-ink: #121600; /* text on an accent fill */
+  --danger: #ff8f8f; /*  9.0:1 */
+
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace;
+  --measure: 46rem; /* 46rem for a list app, up to 52rem for a denser one */
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --base: #ffffff;
+    --text: #111315; /* 18.6:1 */
+    --muted: #454a52; /*  8.9:1 */
+    --faint: #50565e; /*  7.4:1 */
+    --rule: #c9ccd1;
+    --rule-hi: #9aa0a8;
+    --field: #f2f3f4;
+    --accent: #454f00;
+    --accent-ink: #ffffff;
+    --danger: #a01c1b; /*  7.5:1 */
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--base);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.shell {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 2rem 1.1rem 6rem;
+}
+
+/* ── focus ────────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+  z-index: 20;
+}
+.skip-link:focus { left: 0; top: 0; }
+
+/* ── header ───────────────────────────────────────────────────────────────── */
+header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--rule);
+  margin-bottom: 1.5rem;
+}
+
+h1 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.tagline {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  border: 1px solid var(--rule-hi);
+  padding: 0.1rem 0.45rem;
+  white-space: nowrap;
+}
+.badge[data-role="owner"],
+.badge[data-role="editor"],
+.badge[data-state="ok"] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.badge[data-state="stale"],
+.badge[data-state="error"] {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+/* ── section headings ─────────────────────────────────────────────────────── */
+/* h2 is a small-caps label, not a big title. Page titles use h2.page-title. */
+h2 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 700;
+  margin: 2rem 0 0.6rem;
+}
+h2.page-title {
+  font-size: 1.3rem;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text);
+  margin: 0 0 0.3rem;
+}
+h3.sub {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin: 1.2rem 0 0.4rem;
+}
+
+a { color: var(--text); text-underline-offset: 3px; }
+a:hover { color: var(--accent); }
+
+/* ── buttons ──────────────────────────────────────────────────────────────── */
+/* Primary: the one accent fill. At most one per region. */
+button {
+  font: inherit;
+  font-weight: 600;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border: 2px solid var(--accent);
+  border-radius: 0;
+  padding: 0.7rem 1.1rem;
+  cursor: pointer;
+  min-height: 44px;
+}
+button:hover { filter: brightness(1.12); }
+/* Nothing to do yet: reads as quiet, not as a live primary action. */
+button:disabled,
+button:disabled:hover {
+  background: none;
+  color: var(--muted);
+  border-color: var(--rule-hi);
+  cursor: default;
+  filter: none;
+}
+
+/* Secondary: Cancel, Skip, alternatives. */
+button.ghost {
+  background: none;
+  color: var(--text);
+  border: 2px solid var(--rule-hi);
+}
+button.ghost:hover { border-color: var(--text); filter: none; }
+
+/* Tertiary, inline in rows: small mark, still a real target. */
+.small-btn {
+  background: none;
+  color: var(--text);
+  border: 1px solid var(--rule-hi);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  min-height: 34px;
+}
+.small-btn:hover { border-color: var(--accent); color: var(--accent); filter: none; }
+.small-btn.on { border-color: var(--accent); color: var(--accent); }
+
+/* Header utilities: "about", "? keys". */
+.badge-btn {
+  background: none;
+  color: var(--muted);
+  border: 1px solid var(--rule-hi);
+  font-size: 0.78rem;
+  padding: 0.15rem 0.5rem;
+  min-height: 0;
+}
+.badge-btn:hover { color: var(--text); border-color: var(--text); filter: none; }
+
+/* Destructive row action: a 44px target with a small mark (✕). */
+.drop {
+  flex: none;
+  background: none;
+  color: var(--faint);
+  border: 1px solid transparent;
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  width: 44px;
+  min-height: 44px;
+  padding: 0;
+}
+.drop:hover { color: var(--danger); border-color: var(--danger); filter: none; }
+
+/* ── views (tabs) ─────────────────────────────────────────────────────────── */
+.views {
+  display: flex;
+  gap: 0.15rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 1.2rem;
+}
+.views button {
+  background: none;
+  color: var(--muted);
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 0.5rem 0.75rem;
+  font-weight: 500;
+  min-height: 44px;
+}
+.views button:hover { color: var(--text); filter: none; }
+.views button[aria-current="true"] {
+  color: var(--text);
+  font-weight: 700;
+  border-bottom-color: var(--accent);
+}
+
+.count {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--faint);
+}
+
+/* ── rows: the list is the main surface ───────────────────────────────────── */
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.rows li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.rows li:first-child { border-top: 1px solid var(--rule); }
+.rows li[tabindex] { cursor: pointer; }
+/* The cursor is a left bar in the accent, not a background tint: it reads instantly
+   without lowering the contrast of the text it marks. */
+.rows li:focus { outline: none; }
+.rows li:focus-visible,
+.rows li.focused,
+.rows li[tabindex]:hover {
+  box-shadow: inset 3px 0 0 var(--accent);
+  padding-left: 0.6rem;
+}
+
+.row-body { flex: 1; min-width: 0; }
+.row-title { display: block; word-wrap: break-word; }
+.done .row-title { color: var(--faint); text-decoration: line-through; }
+.row-actions { flex: none; display: flex; gap: 0.4rem; align-items: center; }
+
+/* A short identifier in front of a row (M11, 2026-W32): mono, bold, accent. */
+.code {
+  flex: none;
+  width: 3.2rem;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--accent);
+  padding-top: 0.12rem;
+}
+
+/* Metadata: dates, counts, ids, state. Always mono, always under the title. */
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.9rem;
+  margin-top: 0.15rem;
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+.meta .overdue,
+.meta .bad { color: var(--danger); font-weight: 700; }
+.meta .good { color: var(--accent); font-weight: 700; }
+.meta a { color: inherit; }
+
+.note {
+  margin: 0.25rem 0 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+/* Set-apart text (an outcome, a quote, a draft): a rule down the left, never a panel. */
+.aside {
+  margin-top: 0.35rem;
+  padding-left: 0.6rem;
+  border-left: 2px solid var(--rule-hi);
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+/* A prompt to act (roll-forward, triage, getting started): the same bar in the accent. */
+.callout {
+  border-left: 3px solid var(--accent);
+  padding: 0.2rem 0 0.4rem 0.9rem;
+  margin: 0 0 1.4rem;
+}
+.callout h2 { margin: 0 0 0.2rem; color: var(--text); }
+
+.empty {
+  color: var(--muted);
+  padding: 1.5rem 0;
+  margin: 0;
+}
+
+.hint {
+  color: var(--faint);
+  font-size: 0.8rem;
+  font-family: var(--mono);
+  margin: 0.4rem 0 0;
+}
+
+kbd {
+  font-family: var(--mono);
+  font-size: 0.78em;
+  border: 1px solid var(--rule-hi);
+  border-bottom-width: 2px;
+  padding: 0.05em 0.35em;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+/* Plain disclosure, no panel. */
+details.fold { margin: 0.6rem 0 0; }
+details.fold > summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 0.3rem 0;
+  min-height: 34px;
+}
+details.fold > summary:hover,
+details.fold[open] > summary { color: var(--text); }
+
+/* ── capture bar: the primary input of a page ─────────────────────────────── */
+.capture {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0 0 1.4rem;
+}
+.capture[hidden] { display: none; }
+.capture input {
+  flex: 1 1 14rem;
+  min-width: 0;
+  font: inherit;
+  color: var(--text);
+  background: var(--field);
+  border: 2px solid var(--rule-hi);
+  border-radius: 0;
+  padding: 0.7rem 0.8rem;
+}
+
+/* ── forms ────────────────────────────────────────────────────────────────── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0 0 1.1rem;
+  flex: 1;
+  min-width: 0;
+}
+.field.narrow { flex: 0 0 6.5rem; }
+.field label,
+.field .label,
+.inline-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--muted);
+}
+.help-text { font-size: 0.82rem; color: var(--faint); }
+
+.field input,
+.field textarea,
+.field select {
+  font: inherit;
+  color: var(--text);
+  background: var(--field);
+  border: 2px solid var(--rule-hi);
+  border-radius: 0;
+  padding: 0.55rem 0.6rem;
+  width: 100%;
+  min-height: 44px;
+}
+.field textarea { resize: vertical; line-height: 1.5; }
+
+/* --muted, not --faint: placeholders sit on --field, which is lighter than the
+   page, so --faint would land just under 7:1 there. */
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+  opacity: 1; /* Firefox dims placeholders by default */
+}
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent);
+  outline-offset: 0;
+}
+/* Disabled must stay readable — a viewer still needs to read it. */
+.field input:disabled,
+.field textarea:disabled,
+.field select:disabled {
+  opacity: 1;
+  color: var(--muted);
+  border-color: var(--rule);
+}
+
+.field-row { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+
+/* Buttons side by side, wrapping rather than stacking on a phone. */
+.button-row { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin: 0 0 1rem; }
+
+.field-check {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+  min-height: 44px;
+}
+.field-check input {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  accent-color: var(--accent);
+}
+.field-check label { font-size: 0.9rem; color: var(--muted); }
+
+/* ── dialogs: .sheet (a form) and .help (reading) ─────────────────────────── */
+.sheet,
+.help {
+  background: var(--base);
+  color: var(--text);
+  border: 2px solid var(--text);
+  padding: 0;
+  width: calc(100vw - 2rem);
+}
+.sheet { max-width: 38rem; max-height: calc(100dvh - 3rem); }
+.help { max-width: 40rem; max-height: calc(100dvh - 4rem); }
+/* Only when open: setting display on the base class beats the UA's
+   dialog:not([open]) { display: none } and leaves the dialog in the page. */
+.help[open] { display: flex; flex-direction: column; }
+.sheet::backdrop,
+.help::backdrop { background: rgb(0 0 0 / 0.7); }
+
+.sheet form {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 3rem);
+}
+
+.sheet-head,
+.help-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border-bottom: 2px solid var(--rule);
+}
+.sheet-head h2,
+.help-head h2 { margin: 0; font-size: 0.85rem; color: var(--text); }
+.sheet-head button,
+.help-head button {
+  background: none;
+  color: var(--muted);
+  border: 1px solid transparent;
+  padding: 0.2rem 0.55rem;
+  min-height: 34px;
+}
+.sheet-head button:hover,
+.help-head button:hover { color: var(--text); border-color: var(--text); filter: none; }
+
+.sheet-body,
+.help-body {
+  padding: 1rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0; /* without it the flex item never shrinks, so it never scrolls */
+  overscroll-behavior: contain; /* don't scroll the page behind */
+}
+.help-body h3 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin: 1rem 0 0.4rem;
+}
+
+.sheet-meta {
+  margin: 0;
+  color: var(--faint);
+  font-size: 0.8rem;
+  font-family: var(--mono);
+}
+
+.sheet-foot {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  padding: 0.8rem 1rem;
+  border-top: 2px solid var(--rule);
+}
+.sheet-status { font-size: 0.85rem; color: var(--muted); }
+.sheet-status[data-state="error"] { color: var(--danger); }
+.sheet-hint { margin-left: auto; font-size: 0.78rem; color: var(--faint); }
+
+.help-foot {
+  margin: 0;
+  padding: 0.8rem 1rem;
+  border-top: 1px solid var(--rule);
+  color: var(--faint);
+  font-size: 0.8rem;
+}
+
+/* showModal() blocks clicks but not the wheel; lock the page while a dialog is open. */
+html:has(dialog[open]) {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+}
+
+/* ── about: the dictionary entry ──────────────────────────────────────────── */
+.entry-head { margin: 0 0 0.5rem; }
+.entry-head .pos { color: var(--muted); font-style: italic; }
+.senses { margin: 0 0 0.9rem; padding-left: 1.3rem; }
+.senses li { margin-bottom: 0.6rem; }
+.senses .en { display: block; }
+.senses .nn { display: block; color: var(--muted); font-size: 0.92rem; }
+.source { margin: 0 0 1rem; font-size: 0.85rem; color: var(--muted); }
+
+/* Service/diagnostics table: key left, mono value right. */
+.status { list-style: none; margin: 0 0 1rem; padding: 0; font-size: 0.88rem; }
+.status li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.status .k { color: var(--muted); }
+.status .v { font-family: var(--mono); font-size: 0.82rem; text-align: right; word-break: break-word; }
+.v[data-state="ok"] { color: var(--accent); }
+.v[data-state="error"] { color: var(--danger); }
+
+/* ── undo toast ───────────────────────────────────────────────────────────── */
+.undo {
+  position: fixed;
+  left: 50%;
+  bottom: 1.2rem;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  background: var(--base);
+  border: 2px solid var(--text);
+  padding: 0.6rem 0.9rem;
+  max-width: calc(100vw - 2rem);
+  z-index: 10;
+}
+.undo[hidden] { display: none; }
+.undo span { font-size: 0.9rem; }
+.undo button {
+  background: none;
+  color: var(--text);
+  border: 2px solid var(--text);
+  padding: 0.25rem 0.7rem;
+  min-height: 34px;
+}
+.undo button:hover { background: var(--text); color: var(--base); filter: none; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── phones: bottom sheet, stacked fields, full-width actions ─────────────── */
+@media (max-width: 30rem) {
+  .shell { padding: 1.25rem 0.9rem 6rem; }
+  .header-actions { margin-left: 0; }
+  .capture button { width: 100%; }
+  .code { width: 2.6rem; }
+  .field-row { flex-direction: column; gap: 0; }
+  .field.narrow { flex: 1; }
+  .sheet {
+    width: 100vw;
+    max-width: none;
+    margin: 0;
+    border-width: 2px 0 0;
+    position: fixed;
+    bottom: 0;
+    top: auto;
+    max-height: 92dvh;
+  }
+  .sheet form { max-height: 92dvh; }
+  .sheet-foot button { flex: 1; } /* Save reachable without hunting */
+  /* A row's buttons go under its text instead of squeezing it into a column. */
+  .rows li:has(> .row-actions) { flex-wrap: wrap; }
+  .rows li > .row-actions { flex-basis: 100%; justify-content: flex-end; }
+}
+
+/* ── tiles: a launcher / picker grid (see /var/www/sandbox) ───────────────── */
+.tiles {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.75rem;
+}
+.tiles a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  height: 100%;
+  padding: 1rem 1rem 0.9rem;
+  border: 1px solid var(--rule-hi);
+  color: var(--text);
+  text-decoration: none;
+}
+.tiles a:hover { border-color: var(--text); box-shadow: inset 3px 0 0 var(--accent); }
+.tiles a:hover .tile-title { text-decoration: underline; text-underline-offset: 3px; }
+.tile-icon { width: 40px; height: 40px; color: var(--text); margin-bottom: 0.3rem; }
+.tile-title { font-weight: 700; font-size: 1.05rem; line-height: 1.3; }
+.tiles .note { margin: 0; flex: 1; }
+
+/* ── print: black on white, controls gone ─────────────────────────────────── */
+@media print {
+  :root {
+    --base: #fff; --field: #fff;
+    --text: #000; --muted: #333; --faint: #444; --rule: #bbb; --rule-hi: #888;
+    --accent: #000; --accent-ink: #fff; --danger: #000;
+  }
+  .views, .capture, .badge-btn, .drop, .small-btn, .row-actions, .undo,
+  form, button { display: none !important; }
+  .shell { max-width: none; padding: 0; }
+  body { font-size: 11pt; }
+  .rows li { break-inside: avoid; }
+  h2 { break-after: avoid; }
+  a { text-decoration: underline; }
+  .meta .overdue, .meta .bad { text-decoration: underline; }
+}
+
+/* ── app-specific rules go below this line ────────────────────────────────── */
+
+[hidden] { display: none !important; }
+.brand { display: flex; align-items: center; gap: 0.5rem; }
+.brand svg { width: 28px; height: 28px; color: var(--accent); flex: none; }
+section { margin: 0 0 1.6rem; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--rule); color: var(--faint); font-size: 0.8rem; }
+footer a { color: var(--muted); }
+
+/* Preview: the label itself is white tape with black print in both themes, so it
+   keeps its own colours; a hairline marks the tape edge. */
+.stage { display: flex; flex-direction: column; align-items: center; padding: 1.2rem 0 0.4rem; border-bottom: 1px solid var(--rule); }
+.labelcard { max-width: 100%; overflow: hidden; border: 1px solid var(--rule-hi); background: #fff; }
+#preview { display: block; width: calc(var(--wmm, 37) * 4mm); max-width: 100%; height: auto; image-rendering: pixelated; }
+.stripwrap { overflow-x: auto; margin: 0.6rem 0 1rem; }
+#strip { display: block; max-width: 100%; border: 1px solid var(--rule-hi); background: #fff; image-rendering: pixelated; }
+
+/* Result line under the preview: a bar on the left, accent when fine, danger when not. */
+.msg { margin: 0.6rem 0 0; padding-left: 0.6rem; border-left: 3px solid var(--accent); font-size: 0.9rem; }
+.msg.bad { border-left-color: var(--danger); color: var(--danger); font-weight: 600; }
+.callout.warn { border-left-color: var(--danger); color: var(--danger); font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
+
+/* Segmented control: joined square buttons, the pressed one takes the accent fill. */
+.seg { display: flex; flex-wrap: wrap; padding: 0 2px 2px 0; }
+.seg.wrap { margin-bottom: 0.6rem; }
+.seg button { flex: 1 1 auto; background: none; color: var(--text); border: 2px solid var(--rule-hi); font-weight: 500; padding: 0.5rem 0.7rem; white-space: nowrap; }
+.seg button { margin: 0 -2px -2px 0; } /* borders overlap, so a wrapped row still reads as one control */
+.seg button:hover { border-color: var(--text); filter: none; position: relative; }
+.seg button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 700; position: relative; }
+
+.slider { display: flex; align-items: center; gap: 0.5rem; }
+.slider button { width: 44px; padding: 0; font-size: 1.2rem; }
+.slider input { flex: 1; min-width: 0; accent-color: var(--accent); }
+.field label .count { margin-left: 0.4rem; text-transform: none; letter-spacing: 0; }
+
+/* Icon picker: square hairline cells, the chosen ones outlined in the accent. */
+.iconrow { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.iconrow h5 { flex-basis: 100%; margin: 0.3rem 0 0; font-size: 0.76rem; font-family: var(--mono); font-weight: 400; color: var(--muted); }
+.iconrow button { width: 52px; height: 52px; min-height: 0; padding: 9px; background: none; border: 1px solid var(--rule-hi); }
+.iconrow button:hover { border-color: var(--text); filter: none; }
+.iconrow button.on { border: 3px solid var(--accent); padding: 7px; }
+.ico { display: block; width: 100%; height: 100%; background: var(--text); -webkit-mask: var(--m) center/contain no-repeat; mask: var(--m) center/contain no-repeat; }
+.iconrow button.on .ico { background: var(--accent); }
+.ico.rot { transform: rotate(-90deg); }
+#stdhint .small-btn { margin-left: 0.6rem; }
+
+.field-check label { color: var(--text); }
+.field textarea { font-family: var(--mono); font-size: 0.85rem; }
+.field input[type=file] { padding: 0.4rem; }
+
+/* List rows: the text loads the label into the form. */
+.rows li { align-items: center; }
+.rows .t { flex: 1; min-width: 0; cursor: pointer; word-wrap: break-word; }
+.rows .t:hover, .rows .t:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+ol.rows { counter-reset: q; }
+ol.rows li::before { counter-increment: q; content: counter(q); font-family: var(--mono); font-weight: 700; color: var(--accent); width: 1.6rem; flex: none; }
+#recent .t, #templates .t { font-size: 0.92rem; }
+
+@media print {
+  .stage, .stripwrap { border: 0; }
+  footer, .field-check, .help-text { display: none; }
+}
+@media (max-width: 30rem) {
+  .seg button { padding: 0.5rem 0.35rem; font-size: 0.92rem; }
+}
+.labelcard:has(#preview:not([src])) { display: none; }

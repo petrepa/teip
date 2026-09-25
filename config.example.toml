@@ -1,0 +1,12 @@
+# Copy to config.toml. Every key can also be set as TEIP_<KEY> in the environment.
+backend = "mock"            # "usb" for the real printer
+printer = "PT-E560BT"       # PT-P700, PT-P710BT, PT-E550W, PT-P750W, PT-P910BT, PT-P950NW
+tape_mm = 9                 # what the mock pretends is loaded; UI default
+data_dir = "data"
+font = ""                   # TTF path; empty = Arial Bold on Windows, else the bundled Liberation Sans Bold
+margin_mm = 2.0             # feed before/after each label; printer floor 2 mm
+gridfinity_base_mm = 37.0   # 1-unit bin label length; calibrate to your bins
+gridfinity_unit_mm = 42.0
+host = "127.0.0.1"
+port = 8014
+root_path = ""              # e.g. "/labels" when a reverse proxy serves teip under a path

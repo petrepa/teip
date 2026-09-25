@@ -1,0 +1,22 @@
+[project]
+name = "teip"
+version = "0.1.0"
+description = "Tape labels for bins, drawers and boxes on Brother TZe printers: in the browser or on a small server"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pillow",
+    "pyusb",
+    "libusb-package",
+    "pyyaml",
+    "jinja2",
+    "python-multipart",
+]
+
+[dependency-groups]
+dev = ["pytest", "httpx"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

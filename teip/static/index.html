@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>teip</title>
+<meta name="theme-color" content="#0b0b0c" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<link rel="icon" type="image/svg+xml" href="static/icon.svg">
+<link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="shell">
+  <header>
+    <h1 class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><rect x="3" y="11" width="26" height="10"/><path d="M11 11v10"/></g><rect x="15" y="15" width="10" height="2.5" fill="currentColor"/></svg>
+      teip
+    </h1>
+    <p class="tagline">tape labels for everything with a drawer</p>
+    <span class="header-actions">
+      <span id="status" class="badge">…</span>
+      <button type="button" class="badge-btn" id="aboutbtn">about</button>
+    </span>
+  </header>
+
+  <main id="main">
+    <div id="mismatch" class="callout warn" hidden></div>
+
+    <section id="connection" aria-labelledby="conn-title" hidden>
+      <h2 id="conn-title">Printer</h2>
+      <div class="field-row">
+        <div class="field"><label for="model">Model</label><select id="model"></select>
+          <span class="help-text">Found automatically over USB. Pick it yourself for Bluetooth.</span></div>
+      </div>
+      <div class="button-row">
+        <button type="button" id="connusb">Connect over USB</button>
+        <button type="button" class="ghost" id="connbt">Connect over Bluetooth</button>
+        <button type="button" class="ghost" id="disconnect" hidden>Disconnect</button>
+      </div>
+      <p class="note" id="connhelp"></p>
+    </section>
+
+    <section class="stage" aria-label="Preview">
+      <div class="labelcard"><img id="preview" alt="Label preview"></div>
+      <p id="dims" class="hint"></p>
+      <p id="msg" class="msg" aria-live="polite" hidden></p>
+    </section>
+
+    <section aria-labelledby="size-title">
+      <h2 id="size-title">Tape and size</h2>
+      <div class="field">
+        <span class="label" id="tape-label">Tape</span>
+        <div class="seg" id="tape" role="group" aria-labelledby="tape-label"></div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="units">Width <span id="wlabel" class="count">1 wide</span></label>
+          <div class="slider">
+            <button type="button" class="ghost" id="wminus" aria-label="Narrower">−</button>
+            <input type="range" id="units" min="0.5" max="8" step="0.5" value="1">
+            <button type="button" class="ghost" id="wplus" aria-label="Wider">+</button>
+          </div>
+        </div>
+        <div class="field narrow">
+          <label for="fontsize">Font px</label>
+          <input id="fontsize" type="number" min="4" placeholder="auto">
+        </div>
+      </div>
+      <div class="field">
+        <span class="label" id="lenmode-label">Length</span>
+        <div class="seg" id="lenmode" role="group" aria-labelledby="lenmode-label"><button type="button" data-val="gf" class="on" aria-pressed="true">Gridfinity</button><button type="button" data-val="auto" aria-pressed="false">Fit text</button></div>
+        <span class="help-text" id="gfhelp"></span>
+      </div>
+    </section>
+
+    <section aria-labelledby="what-title">
+      <h2 id="what-title">What goes in the bin</h2>
+      <div class="seg wrap" id="cat" role="group" aria-label="Category">
+        <button type="button" data-val="bolts" class="on" aria-pressed="true">Screws &amp; bolts</button>
+        <button type="button" data-val="nuts" aria-pressed="false">Nuts &amp; washers</button>
+        <button type="button" data-val="rivets" aria-pressed="false">Rivets</button>
+        <button type="button" data-val="other" aria-pressed="false">Other</button>
+      </div>
+
+      <div class="field-check"><input type="checkbox" id="showicons" checked><label for="showicons">Show icons</label></div>
+
+      <div id="grp-bolts">
+        <div class="field"><span class="label">Drive type</span><div class="iconrow" id="drives"></div></div>
+        <div class="field"><span class="label">Head type</span><div class="iconrow" id="heads"></div></div>
+      </div>
+      <div id="grp-nuts" hidden>
+        <div class="field"><span class="label">Nut, washer or insert</span><div class="iconrow" id="nutsrow"></div></div>
+      </div>
+      <div id="grp-rivets" hidden>
+        <div class="field"><span class="label">Rivet type</span><div class="iconrow" id="rivetsrow"></div></div>
+        <div class="field-row">
+          <div class="field"><span class="label">Material</span>
+            <div class="seg" id="rmat" role="group" aria-label="Material"><button type="button" data-val="alu" class="on" aria-pressed="true">Alu</button><button type="button" data-val="steel" aria-pressed="false">Steel</button><button type="button" data-val="a2" aria-pressed="false">A2</button><button type="button" data-val="plast" aria-pressed="false">Plastic</button></div></div>
+          <div class="field"><span class="label" id="rsizelabel">Diameter</span><div class="seg" id="rsize" role="group" aria-labelledby="rsizelabel"></div></div>
+        </div>
+        <div class="field" id="rlenwrap"><label for="rlen">Length</label><span class="help-text">mm, body only, without the mandrel</span><input id="rlen" type="number" min="3" step="0.1" value="13"></div>
+      </div>
+      <div id="grp-other" hidden>
+        <div class="field"><span class="label">Icons</span><span class="help-text">Tap in order, tap again to remove.</span><div class="iconrow" id="otherrow"></div></div>
+        <div class="field" id="uploadwrap"><label for="iconfile">Upload an icon</label><span class="help-text">PNG, JPG, BMP or GIF, black on white. Saved under custom/.</span><input id="iconfile" type="file" accept=".png,.jpg,.jpeg,.bmp,.gif"></div>
+      </div>
+      <p class="aside" id="stdhint" hidden></p>
+    </section>
+
+    <section aria-labelledby="text-title">
+      <h2 id="text-title">Label text</h2>
+      <div class="field"><label for="text">Text</label><input id="text" type="text" value="M6×120" autocomplete="off"></div>
+      <div class="field"><label for="sub">Subtext</label><span class="help-text">Optional, printed smaller.</span><input id="sub" type="text" autocomplete="off" placeholder="DIN 912"></div>
+      <div class="field-check">
+        <input type="checkbox" id="chain">
+        <label for="chain">Chain printing: leave the last label inside the printer. The next print or the printer's Feed/Cut key releases it. Saves about 24 mm of tape per print.</label>
+      </div>
+      <div class="button-row">
+        <button type="button" id="print">Print</button>
+        <button type="button" class="ghost" id="queue">Add to batch</button>
+        <button type="button" class="ghost" id="save">Save template</button>
+      </div>
+    </section>
+
+    <section aria-labelledby="batch-title">
+      <h2 id="batch-title">Batch <span class="count" id="qcount"></span></h2>
+      <p class="note">One strip, half cut between labels, one leader for all.</p>
+      <ol id="queuelist" class="rows"></ol>
+      <p class="empty" id="qhint">No labels in the batch yet. Set up a label above and press Add to batch.</p>
+      <div class="stripwrap"><img id="strip" alt="Batch strip preview" hidden></div>
+      <div class="button-row">
+        <button type="button" id="printbatch" disabled>Print batch</button>
+        <button type="button" class="ghost" id="sortbatch">Sort by size</button>
+        <button type="button" class="ghost" id="clearbatch">Clear all</button>
+      </div>
+      <details class="fold"><summary>Paste YAML or CSV</summary>
+        <div class="field"><label for="batchtext">Labels</label>
+          <textarea id="batchtext" rows="5" placeholder="icon,line1,line2,units
+drive/hex-socket,M3×8,DIN 912,1"></textarea></div>
+        <div class="button-row"><button type="button" class="ghost" id="parse">Add to batch</button></div>
+      </details>
+    </section>
+
+    <section aria-labelledby="saved-title">
+      <h2 id="saved-title">Templates</h2>
+      <ul id="templates" class="rows"></ul>
+      <p class="empty" id="tempty">No templates yet. Save template stores the current label here.</p>
+      <h2>Recent prints</h2>
+      <ul id="recent" class="rows"></ul>
+      <p class="empty" id="rempty">Nothing printed yet.</p>
+    </section>
+  </main>
+
+  <footer>
+    Inspired by the <a href="https://label.alch.shop/">ModuBOX label generator</a>.
+    Icons by <a href="https://www.printables.com/model/621771-gridfinity-bin-label-icons">Joe Jankowiak</a> (CC BY 4.0)
+    via <a href="https://github.com/timmmmmmmmm/halagen">halagen</a> (MIT).
+    Not affiliated with Brother. <a href="https://github.com/petrepa/teip">Source</a>.
+  </footer>
+</div>
+
+<dialog class="help" id="about" aria-labelledby="about-title">
+  <div class="help-head"><h2 id="about-title">About</h2><button type="button" id="aboutclose" aria-label="Close">✕</button></div>
+  <div class="help-body">
+    <p class="entry-head"><b>teip</b> <span class="pos">noun, masculine</span></p>
+    <ol class="senses"><li><span class="en">a strip or band with glue on it; tape</span><span class="nn">strimmel eller band med lim på</span></li></ol>
+    <p class="source">From <a href="https://ordbokene.no/nn/search?q=teip">Nynorskordboka</a>.</p>
+    <p>Labels for bins, drawers, assortment boxes and shelves, printed on Brother TZe tape. Pick the part,
+      type the size, and print one label or a whole strip with half cuts between the labels.</p>
+    <ul class="status">
+      <li><span class="k">Runs</span><span class="v" id="a-mode">…</span></li>
+      <li><span class="k">Printer</span><span class="v" id="a-printer">…</span></li>
+      <li><span class="k">Status</span><span class="v" id="a-status">…</span></li>
+    </ul>
+    <p class="source">Layout after the <a href="https://label.alch.shop/">ModuBOX label generator</a>.
+      Not affiliated with Brother. Source: <a href="https://github.com/petrepa/teip">github.com/petrepa/teip</a>.</p>
+  </div>
+  <div class="help-foot">teip · tape labels</div>
+</dialog>
+
+<script type="module" src="static/app.js"></script>
+</body>
+</html>
