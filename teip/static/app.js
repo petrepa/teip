@@ -303,6 +303,7 @@ function about() {
 }
 function connectionUi() {
   const sec = $("#connection"); sec.hidden = engine.mode === "server";
+  about();
   if (sec.hidden) return;
   const on = !!engine.connection;
   sec.classList.toggle("callout", !on);
@@ -310,7 +311,6 @@ function connectionUi() {
   $("#connhelp").textContent = on ? `${engine.model} connected over ${engine.connection}.`
     : engine.usb ? "Plug the printer in and press Connect. On Windows the printer needs the WinUSB driver (see the README); Linux needs a udev rule."
     : "This browser can't reach printers directly. Use Chrome or Edge on a computer, or open a teip server on your network. You can still design labels here.";
-  about();
 }
 async function connect(how) {
   try { await engine[how](); say(""); } catch (e) { if (e.name !== "NotFoundError") say(e.message, true); }  // NotFoundError: the picker was closed
