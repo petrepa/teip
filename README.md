@@ -36,7 +36,7 @@ type the size, and print:
 
 ## Get started
 
-- **Try it in the browser:** open **[petrepa.github.io/teip](https://petrepa.github.io/teip/)** in Chrome or Edge, plug in the printer (USB or Bluetooth) and press Connect. Nothing to install; design works in any browser, printing needs Chrome or Edge.
+- **Try it in the browser:** open **[petrepa.com/teip](https://petrepa.com/teip/)** in Chrome or Edge, plug in the printer (USB or Bluetooth) and press Connect. Nothing to install; design works in any browser, printing needs Chrome or Edge.
 - **Raspberry Pi:** `git clone https://github.com/petrepa/teip && cd teip && ./deploy/linux/install.sh --hostname teip`, then open http://teip.local/
 - **Windows, or more detail:** [docs/install.md](docs/install.md)
 

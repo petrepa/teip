@@ -18,7 +18,7 @@ about 15 MB on the first visit, cached after that) and talks to the printer dire
 
 ## In the browser
 
-Open **[petrepa.github.io/teip](https://petrepa.github.io/teip/)** in Chrome or Edge, press
+Open **[petrepa.com/teip](https://petrepa.com/teip/)** in Chrome or Edge, press
 **Connect over USB** or **Connect over Bluetooth**, and print. Templates and history stay in
 that browser.
 
