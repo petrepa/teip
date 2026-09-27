@@ -1,7 +1,8 @@
 # Using teip
 
 Pick what goes in the box, type the size, print. teip draws the label from parts you choose: the
-drive and head of a screw, a nut, washer, rivet or insert, or any icon you add, next to one or two
+drive and head of a screw, a nut, washer, rivet or insert, a T-nut or bracket for aluminium
+profile, or any icon you add, next to one or two
 lines of text. For common combinations it suggests the DIN/ISO number, one click to use it as the
 second line.
 
@@ -32,6 +33,13 @@ leader either. Press the printer's Feed/Cut key to get it out.
 
 Pick type, material, diameter and length, and teip writes `Ø4.8×13` with the grip range
 underneath, or the drill size for rivet nuts. Both lines stay editable.
+
+## Aluminium profile
+
+T-nuts (hammer, slide-in, spring ball), T-bolts, corner brackets, joining plates, end caps and the
+profile itself. Pick the series (20, 30, 40 or 45) and the thread, and teip writes `M5` with
+`20 · slot 6` underneath, or `M5×10` for a T-bolt. The hint says how each part goes in, e.g.
+that slide-in nuts have to go in before the end of the profile is closed off.
 
 ## Batch from a spreadsheet
 
