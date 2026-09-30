@@ -7,6 +7,18 @@
 <p align="center"><b>Tape labels for everything with a drawer.</b><br>
 Design a label for a bin, box or drawer in your browser and print it on a Brother TZe label printer.</p>
 
+> [!IMPORTANT]
+> **teip only works with Brother P-touch label printers that take TZe tape** (the PT-… models,
+> e.g. PT-E560BT, PT-P710BT, PT-P910BT). It talks to the printer directly in Brother's own raster
+> protocol, so it **does not work** with:
+>
+> - Brother QL printers (paper/DK rolls), or any other Brother printer that isn't a TZe tape printer
+> - Dymo, Zebra, Niimbot, Phomemo, Epson LabelWorks or other brands
+> - ordinary office/home printers (inkjet, laser), or printing a PDF of the labels
+>
+> No Brother TZe printer? You can still design labels in the browser, but there is nothing to print them on.
+> The full list is in [which printers](docs/printers.md).
+
 <p align="center">
   <img src="docs/img/cabinet.jpg" width="760" alt="An assortment cabinet with Sharpie-written drawers (M3x16, M3x35, M3x20) and one drawer with a printed teip label: a socket head cap screw icon and M3×18">
   <br><sub>Before and after: Sharpie on the drawers around it, teip in the middle.</sub>

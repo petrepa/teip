@@ -1,6 +1,11 @@
 # Printers
 
-Brother **TZe** tape printers with USB. Thermal paper printers (QL series) are not supported.
+**Only Brother P-touch printers that use TZe tape.** teip sends Brother's raster protocol straight
+to the printer, with no driver in between, so nothing else can print its labels.
+
+**Not supported:** Brother QL (thermal paper/DK rolls) and other non-TZe Brother printers, other
+brands (Dymo, Zebra, Niimbot, Phomemo, Epson LabelWorks, …), and regular inkjet or laser printers.
+There is no PDF or image export for printing elsewhere either.
 
 | Printer | USB | Bluetooth | Status |
 |---|---|---|---|
