@@ -41,6 +41,9 @@ profile itself. Pick the series (20, 30, 40 or 45) and the thread, and teip writ
 `20 · slot 6` underneath, or `M5×10` for a T-bolt. The hint says how each part goes in, e.g.
 that slide-in nuts have to go in before the end of the profile is closed off.
 
+<p><img src="img/profile-dark.png" width="520" alt="The Alu profile category: a hammer T-nut picked, series 20, thread M5, the preview shows M5 over 20 · slot 6"></p>
+<p><img src="img/profile-labels.png" width="900" alt="Eight profile labels on 12 mm tape: hammer, slide-in and spring-ball T-nuts, a T-bolt M8×20, corner bracket, L joining plate, end cap and a 20×20 profile"></p>
+
 ## Batch from a spreadsheet
 
 Open **Paste YAML or CSV** under the batch and paste rows. CSV needs a header:
