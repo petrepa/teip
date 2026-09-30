@@ -1,5 +1,8 @@
 # Installing teip
 
+You need a **Brother P-touch printer that takes TZe tape**; teip cannot print to anything else.
+See [printers.md](printers.md) for the list.
+
 The page is the same everywhere. What differs is who renders the label and talks to the printer.
 
 | | Where it runs | Printer connection | Browsers |
