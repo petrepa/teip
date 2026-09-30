@@ -312,9 +312,13 @@ def tnut_hammer(d):
 
 
 def tnut_spring(d):
-    tnut_slide(d)
-    ellipse(d, C + 36, 164, C + 88, 216)  # spring ball
-    bore(d, 64, 184)
+    """Roll-in nut: low key on top, rounded underside, spring ball in the middle of the underside."""
+    rect(d, 76, 58, 180, 84, r=4)  # key
+    arc = [(C + 104 * math.cos(t * math.pi / 24), 112 + 76 * math.sin(t * math.pi / 24)) for t in range(25)]
+    poly(d, [(24, 80), (232, 80)] + arc)
+    bore(d, 58, 150)
+    ellipse(d, C - 30, 150, C + 30, 210, on=False)  # pocket around the ball
+    ellipse(d, C - 22, 158, C + 22, 202)  # ball, stands proud of the underside
 
 
 def tbolt(d):

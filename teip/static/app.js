@@ -39,7 +39,7 @@ const SERIES = { 20: { slot: 6, threads: ["M3", "M4", "M5"] }, 30: { slot: 8, th
 const PROFILE_HINT = {
   "t-nut-hammer": "drops in from the front and turns 90° as you tighten, so it can go in after the frame is built",
   "t-nut-slide": "slides in from the open end of the profile: put in spares before closing the frame",
-  "t-nut-spring": "drops in from the front and the spring ball holds it where you leave it",
+  "t-nut-spring": "tilt it in through the slot opening and roll it into place; the spring ball holds it where you leave it",
   "t-bolt": "the head drops into the slot and turns 90°; length is measured under the head",
   "corner-bracket": "two screws and T-nuts per bracket", "plate-straight": "one screw and T-nut per hole",
   "plate-l": "one screw and T-nut per hole", "plate-t": "one screw and T-nut per hole", "end-cap": "pushes into the end of the profile",
