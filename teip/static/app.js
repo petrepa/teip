@@ -240,6 +240,21 @@ $("#parse").onclick = async () => {
   try { state.queue.push(...await engine.parse($("#batchtext").value)); renderQueue(); }
   catch (e) { say(e.message, true); }
 };
+// A link can carry a batch: #batch=<base64url of the same YAML or CSV the paste box takes>, so another
+// app (an inventory, a bin planner) can open teip with its labels queued. It only fills the batch;
+// printing still takes a press of Print batch.
+async function batchFromLink(b64) {
+  history.replaceState(null, "", location.pathname + location.search);  // a reload must not queue them twice
+  try {
+    if (b64.length > 200000) throw new Error("batch link too long");
+    const bin = atob(decodeURIComponent(b64).replace(/-/g, "+").replace(/_/g, "/"));
+    const text = new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
+    const labels = await engine.parse(text);
+    state.queue.push(...labels); renderQueue();
+    $("#batch-title").scrollIntoView({ behavior: "smooth", block: "start" });
+    say(`${labels.length} labels from the link are in the batch. Check them, then print.`);
+  } catch (e) { say(`Could not read the batch link: ${e.message}`, true); }
+}
 function describe(s) {
   const len = s.units ? `${s.units} wide` : s.length_mm ? `${s.length_mm} mm` : "fit";
   const ic = (s.icons?.length ? s.icons : s.icon ? [s.icon] : []).map((i) => NAMES[i.replace("@90", "")] || i).join(" + ") || "no icon";
@@ -334,8 +349,9 @@ setTape(B.defaults.tape_mm);
 buildRows(); renderLists();
 document.querySelectorAll("#text, #sub, #fontsize").forEach((el) => el.addEventListener("input", schedule));
 state.drive = "drive/hex-socket"; state.head = "head/countersunk"; rivetForm(false);
-const hash = location.hash.slice(1);  // #rivets opens on that category
-if (hash && $(`#grp-${hash}`)) { setCategory(hash); if (hash === "rivets") rivetForm(); }
+const hash = location.hash.slice(1);  // #rivets opens on that category; #batch=… fills the batch
+if (hash.startsWith("batch=")) await batchFromLink(hash.slice(6));
+else if (/^[\w-]+$/.test(hash) && $(`#grp-${hash}`)) { setCategory(hash); if (hash === "rivets") rivetForm(); }
 $("#aboutbtn").onclick = () => $("#about").showModal();
 $("#aboutclose").onclick = () => $("#about").close();
 poll(); setInterval(poll, 5000);
