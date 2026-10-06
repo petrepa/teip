@@ -57,6 +57,32 @@ nuts/nyloc,M5,DIN 985,1
 Columns are the label fields listed in [PROTOCOL.md](PROTOCOL.md): `line1`, `line2`, `icon` or
 `icons`, `units`, `length_mm`, `tape_mm`, `font_size` and more.
 
+A CSV cell can't hold a list, so for several icons join them with `+` (or `;`) in `icons`:
+
+```csv
+icons,line1,line2,units
+head/socket-cap+drive/hex-socket,M3×8,DIN 912,1
+```
+
+YAML takes the list as it is: `icons: [head/socket-cap, drive/hex-socket]`.
+
+## Batch from a link
+
+Another app can open teip with a batch already queued: put the same YAML or CSV, base64url
+encoded, after `#batch=`:
+
+```text
+https://petrepa.com/teip/#batch=LSBsaW5lMTogTTPDlzgKICB1bml0czogMQo
+```
+
+The labels land in **Batch** for you to check; nothing prints until you press Print batch. The
+link works the same on a teip server (`http://teip.local/#batch=…`). To make one:
+
+```python
+import base64
+link = "https://petrepa.com/teip/#batch=" + base64.urlsafe_b64encode(yaml_text.encode()).decode().rstrip("=")
+```
+
 ## Templates and history
 
 **Save template** keeps the current label under a name. **Recent prints** lists the last 30

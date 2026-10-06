@@ -162,4 +162,19 @@ def parse_batch(text: str) -> list[LabelSpec]:
     rows = list(csv.DictReader(io.StringIO(text)))
     if not rows:
         raise ValueError("batch text is neither a YAML list nor CSV with a header")
-    return [LabelSpec(**{k.strip(): v for k, v in r.items() if k and v not in (None, "")}) for r in rows]
+    return [LabelSpec(**_csv_row(r)) for r in rows]
+
+
+def _csv_row(row: dict) -> dict:
+    """One CSV row -> LabelSpec fields. A CSV cell can't hold a list, so `icons` (or `icon`) may
+    join several icons with + or ;, e.g. head/socket-cap+drive/hex-socket."""
+    d = {k.strip(): v for k, v in row.items() if k and v not in (None, "")}
+    if "icons" in d:
+        d["icons"] = _split_icons(d["icons"])
+    if "icon" in d and any(c in d["icon"] for c in "+;"):
+        d["icons"] = _split_icons(d.pop("icon")) + d.get("icons", [])
+    return d
+
+
+def _split_icons(cell: str) -> list[str]:
+    return [i.strip() for i in cell.replace(";", "+").split("+") if i.strip()]

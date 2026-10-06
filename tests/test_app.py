@@ -73,6 +73,16 @@ def test_parse_batch_yaml_and_csv():
     assert parse_batch("") == []
 
 
+def test_parse_batch_csv_several_icons():
+    c = parse_batch("icons,line1,units\nhead/socket-cap+drive/hex-socket,M3×8,1\n"
+                    "nuts/nyloc,M4,1\n,M5,1\n")
+    assert c[0].icons == ["head/socket-cap", "drive/hex-socket"]
+    assert c[1].icons == ["nuts/nyloc"] and c[2].icons == []
+    # `icon` keeps working for one icon, and takes + or ; for several
+    i = parse_batch("icon,line1\ndrive/torx,T20\nhead/pan; drive/torx,M4×10\n")
+    assert i[0].icons == ["drive/torx"] and i[1].icons == ["head/pan", "drive/torx"]
+
+
 def test_labelspec_merges_lines():
     assert LabelSpec(line1="a", line2="").lines == ["a"]
     assert LabelSpec(lines=["x", " "]).lines == ["x"]
