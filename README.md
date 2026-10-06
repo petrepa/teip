@@ -31,8 +31,8 @@ type the size, and print:
 
 <p align="center"><img src="docs/img/demo.gif" width="740" alt="Picking a Torx drive and pan head, typing M4×12, switching to a nyloc nut: the label preview updates each time"></p>
 
-- **Labels you can read at a glance.** Screw drive and head, nuts, washers, rivets, inserts or
-  your own icons, next to one or two lines of text.
+- **Labels you can read at a glance.** Screw drive and head, nuts, washers, rivets, inserts,
+  T-nuts and brackets for aluminium profile, or your own icons, next to one or two lines of text.
 - **A whole drawer at once.** Queue labels and print one strip with half cuts between them, so
   they peel off one by one and you waste tape once, not once per label.
 - **Sized for the box.** Fit to the text, a length in mm, or Gridfinity grid units.
