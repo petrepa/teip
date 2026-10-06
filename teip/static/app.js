@@ -8,7 +8,7 @@ try { engine = await start((text) => say(text)); }
 catch (e) { say(`Could not start: ${e.message}`, true); throw e; }
 const B = engine.boot;
 const press = (el, on) => { el.classList.toggle("on", on); el.setAttribute("aria-pressed", on); };
-const state = { cat: "bolts", drive: null, head: null, nut: null, rivet: "rivets/dome", rmat: "alu", other: [], lenmode: "gf", queue: [], status: null,
+const state = { cat: "bolts", drive: null, head: null, nut: null, rivet: "rivets/dome", rmat: "alu", prof: "profile/t-nut-hammer", other: [], lenmode: "gf", queue: [], status: null,
   templates: B.templates, recent: B.recent, preview: null };
 
 const NAMES = {
@@ -24,12 +24,27 @@ const NAMES = {
   "inserts/heat": "Heat-set insert", "inserts/wood": "Wood insert",
   "rivets/dome": "Blind rivet, dome head", "rivets/countersunk": "Blind rivet, countersunk", "rivets/large-flange": "Blind rivet, large flange",
   "rivets/nut": "Rivet nut (blind nut)",
+  "profile/t-nut-hammer": "Hammer T-nut", "profile/t-nut-slide": "Slide-in T-nut", "profile/t-nut-spring": "Spring-ball T-nut",
+  "profile/t-bolt": "T-bolt (hammer head)", "profile/corner-bracket": "Corner bracket", "profile/plate-straight": "Joining plate",
+  "profile/plate-l": "L joining plate", "profile/plate-t": "T joining plate", "profile/end-cap": "End cap", "profile/section": "Profile",
 };
 const HEAD_ORDER = ["countersunk", "socket-cap", "button", "pan", "flange-pan", "cheese", "hex", "flange-hex", "shoulder", "truss", "wafer", "set-screw", "wood-countersunk", "wood-pan", "wood-hex"];
 const RIVET_ORDER = ["dome", "countersunk", "large-flange", "nut"];
 const RMAT = { alu: "Alu", steel: "Steel", a2: "A2", plast: "Alu/plast" };  // body material; standard rivets have a steel mandrel
 const RIVET_STD = { dome: { alu: "ISO 15977", steel: "ISO 15979", a2: "ISO 15983" }, countersunk: { alu: "ISO 15978", steel: "ISO 15980", a2: "ISO 15984" } };
 const NUT_DRILL = { M3: 5, M4: 6, M5: 7, M6: 9, M8: 11, M10: 13 };  // hole for round-body rivet nuts
+const PROFILE_ORDER = ["t-nut-hammer", "t-nut-slide", "t-nut-spring", "t-bolt", "corner-bracket", "plate-straight", "plate-l", "plate-t", "end-cap", "section"];
+// ponytail: series -> slot width and the threads its T-nuts come in; 20 is B-type (slot 6), 40 the slot-8 kind. Edit the subtext for I-type or slot-10 40s
+const SERIES = { 20: { slot: 6, threads: ["M3", "M4", "M5"] }, 30: { slot: 8, threads: ["M4", "M5", "M6"] }, 40: { slot: 8, threads: ["M4", "M5", "M6", "M8"] }, 45: { slot: 10, threads: ["M5", "M6", "M8"] } };
+const PROFILE_HINT = {
+  "t-nut-hammer": "drops in from the front and turns 90° as you tighten, so it can go in after the frame is built",
+  "t-nut-slide": "slides in from the open end of the profile: put in spares before closing the frame",
+  "t-nut-spring": "tilt it in through the slot opening and roll it into place; the spring ball holds it where you leave it",
+  "t-bolt": "the head drops into the slot and turns 90°; length is measured under the head",
+  "corner-bracket": "two screws and T-nuts per bracket", "plate-straight": "one screw and T-nut per hole",
+  "plate-l": "one screw and T-nut per hole", "plate-t": "one screw and T-nut per hole", "end-cap": "pushes into the end of the profile",
+  "section": "put the cut length in the text",
+};
 const DRIVE_ORDER = ["hex-socket", "torx", "torx-security", "phillips", "pozidriv", "robertson", "slotted", "hex-external", "hex-flange", "square-external"];
 const STANDARDS = {  // head|drive, or nut/washer id -> hint
   "socket-cap|hex-socket": "DIN 912 / ISO 4762 · socket head cap screw (SHCS)", "button|hex-socket": "ISO 7380 · button head socket screw",
@@ -67,20 +82,22 @@ function buildRows() {
   const nuts = ["nuts", "washers", "inserts"].flatMap((f) => (B.icons[f] || []).map((n) => `${f}/${n}`));
   fillRow($("#nutsrow"), nuts, (id) => { state.nut = state.nut === id ? null : id; paint(); });
   fillRow($("#rivetsrow"), ordered("rivets", RIVET_ORDER), (id) => { state.rivet = state.rivet === id ? null : id; rivetForm(); });
-  const other = Object.entries(B.icons).filter(([f]) => !["drive", "head", "nuts", "washers", "inserts", "rivets"].includes(f))
+  fillRow($("#profilerow"), ordered("profile", PROFILE_ORDER), (id) => { state.prof = state.prof === id ? null : id; profileForm(); });
+  const other = Object.entries(B.icons).filter(([f]) => !["drive", "head", "nuts", "washers", "inserts", "rivets", "profile"].includes(f))
     .flatMap(([f, names]) => names.map((n) => (f === "." ? n : `${f}/${n}`)));
   fillRow($("#otherrow"), other, (id) => { const i = state.other.indexOf(id); i < 0 ? state.other.push(id) : state.other.splice(i, 1); paint(); });
   paint();
 }
 function paint() {
-  const on = new Set([state.drive, state.head, state.nut, state.rivet, ...state.other]);
+  const on = new Set([state.drive, state.head, state.nut, state.rivet, state.prof, ...state.other]);
   document.querySelectorAll(".iconrow button").forEach((b) => press(b, on.has(b.dataset.icon)));
   const key = state.cat === "bolts" ? `${(state.head || "").replace("head/", "")}|${(state.drive || "").replace("drive/", "")}` : state.nut;
-  const std = state.cat === "rivets" ? rivetHint() : STANDARDS[key];
+  const formed = state.cat === "rivets" || state.cat === "profile";
+  const std = state.cat === "rivets" ? rivetHint() : state.cat === "profile" ? profileHint() : STANDARDS[key];
   const h = $("#stdhint"); h.innerHTML = ""; h.hidden = !std;
   if (std) {
     h.textContent = std;
-    if (state.cat === "rivets") return schedule();  // subtext is filled by the form already
+    if (formed) return schedule();  // subtext is filled by the form already
     const b = document.createElement("button"); b.type = "button"; b.className = "small-btn"; b.textContent = "Use as subtext";
     b.onclick = () => { $("#sub").value = std.split(" · ")[0]; schedule(); }; h.appendChild(b);
   }
@@ -91,15 +108,16 @@ function icons() {
   if (state.cat === "bolts") return [state.drive, state.head].filter(Boolean);
   if (state.cat === "nuts") return state.nut ? [state.nut] : [];
   if (state.cat === "rivets") return state.rivet ? [state.rivet] : [];
+  if (state.cat === "profile") return state.prof ? [state.prof] : [];
   return state.other;
 }
 function setCategory(cat) {
   state.cat = cat;
   document.querySelectorAll("#cat button").forEach((b) => press(b, b.dataset.val === cat));
-  for (const c of ["bolts", "nuts", "rivets", "other"]) $(`#grp-${c}`).hidden = c !== cat;
+  for (const c of ["bolts", "nuts", "rivets", "profile", "other"]) $(`#grp-${c}`).hidden = c !== cat;
   paint();
 }
-$("#cat").onclick = (e) => { if (!e.target.dataset.val) return; setCategory(e.target.dataset.val); if (state.cat === "rivets") rivetForm(); };
+$("#cat").onclick = (e) => { if (!e.target.dataset.val) return; setCategory(e.target.dataset.val); if (state.cat === "rivets") rivetForm(); if (state.cat === "profile") profileForm(); };
 
 // ---- rivets: structured form -> text + subtext ------------------------------------------
 function segVal(id) { return $(`#${id} .on`)?.dataset.val; }
@@ -131,6 +149,31 @@ function rivetHint() {
 $("#rmat").onclick = (e) => { if (!e.target.dataset.val) return; state.rmat = e.target.dataset.val; segSet("rmat", state.rmat); rivetForm(); };
 $("#rsize").onclick = (e) => { if (!e.target.dataset.val) return; segSet("rsize", e.target.dataset.val); rivetForm(); };
 $("#rlen").oninput = () => rivetForm();
+
+// ---- aluminium profile: series + thread -> text + subtext ---------------------------------
+function profileForm(fill = true) {
+  const t = (state.prof || "").replace("profile/", ""), ser = segVal("pser"), { slot, threads } = SERIES[ser], seg = $("#pthr");
+  if (seg.dataset.ser !== ser) {
+    const was = segVal("pthr");
+    seg.dataset.ser = ser; seg.innerHTML = "";
+    for (const v of threads) { const b = document.createElement("button"); b.type = "button"; b.dataset.val = v; b.textContent = v; seg.appendChild(b); }
+    segSet("pthr", threads.includes(was) ? was : threads[threads.length > 3 ? 2 : threads.length - 1]);  // M5 on 20s, M6 on 30/40s, M8 on 45s
+  }
+  const threaded = t.startsWith("t-nut") || t === "t-bolt", thr = segVal("pthr");
+  $("#pthrwrap").hidden = !threaded; $("#plenwrap").hidden = t !== "t-bolt";
+  if (fill && t) {
+    $("#text").value = t === "t-bolt" ? `${thr}×${+$("#plen").value || 0}` : threaded ? thr : `${ser}×${ser}`;
+    $("#sub").value = threaded || t === "section" ? `${ser} · slot ${slot}` : NAMES[state.prof];
+  }
+  paint();
+}
+function profileHint() {
+  const t = (state.prof || "").replace("profile/", ""), ser = segVal("pser");
+  return t ? `${NAMES[state.prof]}, ${ser} series, slot ${SERIES[ser].slot} · ${PROFILE_HINT[t] || ""}` : "";
+}
+$("#pser").onclick = (e) => { if (!e.target.dataset.val) return; segSet("pser", e.target.dataset.val); profileForm(); };
+$("#pthr").onclick = (e) => { if (!e.target.dataset.val) return; segSet("pthr", e.target.dataset.val); profileForm(); };
+$("#plen").oninput = () => profileForm();
 $("#showicons").onchange = schedule;
 $("#iconfile").onchange = async (e) => {
   const f = e.target.files[0]; if (!f) return;
@@ -176,10 +219,13 @@ function load(s) {
   state.head = (ids.find((i) => i.startsWith("head/")) || null)?.replace("@90", "") ?? null;
   state.nut = ids.find((i) => /^(nuts|washers|inserts)\//.test(i)) || null;
   state.rivet = ids.find((i) => i.startsWith("rivets/")) || state.rivet;
-  state.other = ids.filter((i) => !/^(drive|head|nuts|washers|inserts|rivets)\//.test(i));
+  state.prof = ids.find((i) => i.startsWith("profile/")) || state.prof;
+  state.other = ids.filter((i) => !/^(drive|head|nuts|washers|inserts|rivets|profile)\//.test(i));
   $("#showicons").checked = ids.length > 0 || !s.lines?.length;
-  setCategory(state.nut ? "nuts" : ids.some((i) => i.startsWith("rivets/")) ? "rivets" : state.other.length ? "other" : "bolts");
+  setCategory(state.nut ? "nuts" : ids.some((i) => i.startsWith("rivets/")) ? "rivets" : ids.some((i) => i.startsWith("profile/")) ? "profile"
+    : state.other.length ? "other" : "bolts");
   if (state.cat === "rivets") rivetForm(false);
+  if (state.cat === "profile") profileForm(false);
 }
 
 // ---- preview / status ---------------------------------------------------------------
@@ -348,10 +394,10 @@ connectionUi();
 setTape(B.defaults.tape_mm);
 buildRows(); renderLists();
 document.querySelectorAll("#text, #sub, #fontsize").forEach((el) => el.addEventListener("input", schedule));
-state.drive = "drive/hex-socket"; state.head = "head/countersunk"; rivetForm(false);
+state.drive = "drive/hex-socket"; state.head = "head/countersunk"; rivetForm(false); profileForm(false);
 const hash = location.hash.slice(1);  // #rivets opens on that category; #batch=… fills the batch
 if (hash.startsWith("batch=")) await batchFromLink(hash.slice(6));
-else if (/^[\w-]+$/.test(hash) && $(`#grp-${hash}`)) { setCategory(hash); if (hash === "rivets") rivetForm(); }
+else if (/^[\w-]+$/.test(hash) && $(`#grp-${hash}`)) { setCategory(hash); if (hash === "rivets") rivetForm(); if (hash === "profile") profileForm(); }
 $("#aboutbtn").onclick = () => $("#about").showModal();
 $("#aboutclose").onclick = () => $("#about").close();
 poll(); setInterval(poll, 5000);

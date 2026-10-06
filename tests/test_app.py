@@ -98,3 +98,10 @@ def test_rivet_icons_render(client):
         assert (ROOT / "icons" / "rivets" / f"{n}.png").exists()
     r = client.post("/api/preview", json={"labels": [{"lines": ["Ø4.8×13", "Alu · grip ≈6.5–8.5"], "units": 1, "icons": ["rivets/dome"]}]})
     assert r.status_code == 200
+
+
+def test_profile_icons_render(client):
+    for n in ("t-nut-hammer", "t-nut-slide", "t-nut-spring", "t-bolt", "corner-bracket", "plate-straight", "plate-l", "plate-t", "end-cap", "section"):
+        assert (ROOT / "icons" / "profile" / f"{n}.png").exists()
+    r = client.post("/api/preview", json={"labels": [{"lines": ["M5", "20 · slot 6"], "units": 1, "icons": ["profile/t-nut-hammer"]}]})
+    assert r.status_code == 200

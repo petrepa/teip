@@ -1,7 +1,8 @@
 """Draw the built-in icon set: clean silhouettes in the style of 3D-printed bin labels.
 
 Heads and rivets are side profiles, head on the left, shank/body to the right. Drives, nuts and
-washers are top views. Everything is plain geometry drawn here, black on transparent, 256 px.
+washers are top views; T-nuts end on, as they sit in the slot. Everything is plain geometry drawn
+here, black on transparent, 256 px.
 Run:  python icons/generate.py
 """
 
@@ -289,9 +290,96 @@ def gen_rivets():
         save(im, "rivets", name)
 
 
+# ---- aluminium profile hardware. T-nuts end on, as they sit in the slot: neck up, wings below,
+# ---- threaded bore through the middle. T-bolt side view like the heads; brackets side view,
+# ---- plates, end cap and the profile section from the front ---------------------------------
+def bore(d, y0, y1, w=18):
+    rect(d, C - w, y0, C + w, y1, on=False)
+    for y in range(y0 + 8, y1 - 4, 22):
+        rect(d, C - w, y, C + w, y + 9)
+
+
+def tnut_slide(d):
+    rect(d, 88, 64, 168, 124, r=4)  # neck
+    rect(d, 24, 120, 232, 184, r=6)  # wings
+    bore(d, 64, 184)
+
+
+def tnut_hammer(d):
+    rect(d, 92, 56, 164, 112, r=4)
+    poly(d, [(24, 108), (232, 108), (232, 132), (184, 196), (72, 196), (24, 132)])  # rounded off below, so it turns in the slot
+    bore(d, 56, 196)
+
+
+def tnut_spring(d):
+    """Roll-in nut: low key on top, rounded underside, spring ball in the middle of the underside."""
+    rect(d, 76, 58, 180, 84, r=4)  # key
+    arc = [(C + 104 * math.cos(t * math.pi / 24), 112 + 76 * math.sin(t * math.pi / 24)) for t in range(25)]
+    poly(d, [(24, 80), (232, 80)] + arc)
+    bore(d, 58, 150)
+    ellipse(d, C - 30, 150, C + 30, 210, on=False)  # pocket around the ball
+    ellipse(d, C - 22, 158, C + 22, 202)  # ball, stands proud of the underside
+
+
+def tbolt(d):
+    rect(d, 6, CY - 76, 42, CY + 76, r=8)  # hammer head
+    rect(d, 42, CY - 34, 70, CY + 34)  # square neck
+    shank(d, 70, 52)
+    for x in range(84, 246, 16):  # thread
+        poly(d, [(x, CY - 26), (x + 8, CY - 17), (x + 16, CY - 26)], on=False)
+        poly(d, [(x, CY + 26), (x + 8, CY + 17), (x + 16, CY + 26)], on=False)
+
+
+def corner_bracket(d):
+    poly(d, [(36, 28), (36, 228), (228, 228)])
+    poly(d, [(70, 92), (70, 194), (170, 194)], on=False)
+
+
+def plate(d, bars, holes):
+    for b in bars:
+        rect(d, *b, r=10)
+    for x, y in holes:
+        ellipse(d, x - 14, y - 14, x + 14, y + 14, on=False)
+
+
+def section(d):
+    rect(d, 16, 16, 240, 240, r=10)
+    for k in range(4):  # one T-slot per side, drawn for the top and turned
+        a = k * math.pi / 2
+
+        def rot(pts):
+            return [(C + (x - C) * math.cos(a) - (y - C) * math.sin(a), C + (x - C) * math.sin(a) + (y - C) * math.cos(a)) for x, y in pts]
+
+        poly(d, rot([(C - 33, 10), (C + 33, 10), (C + 33, 42), (C - 33, 42)]), on=False)  # opening
+        poly(d, rot([(C - 58, 40), (C + 58, 40), (C + 28, 88), (C - 28, 88)]), on=False)  # cavity
+    ellipse(d, C - 20, C - 20, C + 20, C + 20, on=False)  # core hole
+
+
+PROFILE = {
+    "t-nut-hammer": tnut_hammer,
+    "t-nut-slide": tnut_slide,
+    "t-nut-spring": tnut_spring,
+    "t-bolt": tbolt,
+    "corner-bracket": corner_bracket,
+    "plate-straight": lambda d: plate(d, [(12, 92, 244, 164)], [(48, C), (104, C), (152, C), (208, C)]),
+    "plate-l": lambda d: plate(d, [(20, 20, 92, 236), (20, 164, 236, 236)], [(56, 56), (56, 128), (56, 200), (128, 200), (200, 200)]),
+    "plate-t": lambda d: plate(d, [(20, 20, 236, 92), (92, 20, 164, 236)], [(56, 56), (128, 56), (200, 56), (128, 128), (128, 200)]),
+    "end-cap": lambda d: (rect(d, 24, 24, 232, 232, r=26), ellipse(d, C - 22, C - 22, C + 22, C + 22, on=False)),
+    "section": section,
+}
+
+
+def gen_profile():
+    for name, fn in PROFILE.items():
+        im, d = canvas()
+        fn(d)
+        save(im, "profile", name)
+
+
 if __name__ == "__main__":
     gen_heads()
     gen_drives()
     gen_nuts()
     gen_rivets()
+    gen_profile()
     print("icons written to", OUT)

@@ -82,6 +82,7 @@
         <button type="button" data-val="bolts" class="on" aria-pressed="true">Screws &amp; bolts</button>
         <button type="button" data-val="nuts" aria-pressed="false">Nuts &amp; washers</button>
         <button type="button" data-val="rivets" aria-pressed="false">Rivets</button>
+        <button type="button" data-val="profile" aria-pressed="false">Alu profile</button>
         <button type="button" data-val="other" aria-pressed="false">Other</button>
       </div>
 
@@ -102,6 +103,15 @@
           <div class="field"><span class="label" id="rsizelabel">Diameter</span><div class="seg" id="rsize" role="group" aria-labelledby="rsizelabel"></div></div>
         </div>
         <div class="field" id="rlenwrap"><label for="rlen">Length</label><span class="help-text">mm, body only, without the mandrel</span><input id="rlen" type="number" min="3" step="0.1" value="13"></div>
+      </div>
+      <div id="grp-profile" hidden>
+        <div class="field"><span class="label">Part</span><div class="iconrow" id="profilerow"></div></div>
+        <div class="field-row">
+          <div class="field"><span class="label" id="pser-label">Series</span>
+            <div class="seg" id="pser" role="group" aria-labelledby="pser-label"><button type="button" data-val="20" class="on" aria-pressed="true">20</button><button type="button" data-val="30" aria-pressed="false">30</button><button type="button" data-val="40" aria-pressed="false">40</button><button type="button" data-val="45" aria-pressed="false">45</button></div></div>
+          <div class="field" id="pthrwrap"><span class="label" id="pthr-label">Thread</span><div class="seg" id="pthr" role="group" aria-labelledby="pthr-label"></div></div>
+        </div>
+        <div class="field" id="plenwrap"><label for="plen">Length</label><span class="help-text">mm, under the head</span><input id="plen" type="number" min="4" step="1" value="10"></div>
       </div>
       <div id="grp-other" hidden>
         <div class="field"><span class="label">Icons</span><span class="help-text">Tap in order, tap again to remove.</span><div class="iconrow" id="otherrow"></div></div>
