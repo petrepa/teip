@@ -81,6 +81,7 @@
       <div class="seg wrap" id="cat" role="group" aria-label="Category">
         <button type="button" data-val="bolts" class="on" aria-pressed="true">Screws &amp; bolts</button>
         <button type="button" data-val="nuts" aria-pressed="false">Nuts &amp; washers</button>
+        <button type="button" data-val="inserts" aria-pressed="false">Inserts</button>
         <button type="button" data-val="rivets" aria-pressed="false">Rivets</button>
         <button type="button" data-val="profile" aria-pressed="false">Alu profile</button>
         <button type="button" data-val="other" aria-pressed="false">Other</button>
@@ -93,7 +94,15 @@
         <div class="field"><span class="label">Head type</span><div class="iconrow" id="heads"></div></div>
       </div>
       <div id="grp-nuts" hidden>
-        <div class="field"><span class="label">Nut, washer or insert</span><div class="iconrow" id="nutsrow"></div></div>
+        <div class="field"><span class="label">Nut or washer</span><div class="iconrow" id="nutsrow"></div></div>
+      </div>
+      <div id="grp-inserts" hidden>
+        <div class="field"><span class="label">Insert</span><div class="iconrow" id="insertsrow"></div></div>
+        <div class="field-row">
+          <div class="field"><span class="label" id="ithr-label">Thread</span>
+            <div class="seg" id="ithr" role="group" aria-labelledby="ithr-label"><button type="button" data-val="M2" aria-pressed="false">M2</button><button type="button" data-val="M2.5" aria-pressed="false">M2.5</button><button type="button" data-val="M3" class="on" aria-pressed="true">M3</button><button type="button" data-val="M4" aria-pressed="false">M4</button><button type="button" data-val="M5" aria-pressed="false">M5</button><button type="button" data-val="M6" aria-pressed="false">M6</button></div></div>
+          <div class="field" id="ilenwrap"><label for="ilen">Length</label><span class="help-text">mm, filled in for the thread</span><input id="ilen" type="number" min="2" step="0.1" value="5.7"></div>
+        </div>
       </div>
       <div id="grp-rivets" hidden>
         <div class="field"><span class="label">Rivet type</span><div class="iconrow" id="rivetsrow"></div></div>

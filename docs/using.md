@@ -34,6 +34,13 @@ leader either. Press the printer's Feed/Cut key to get it out.
 Pick type, material, diameter and length, and teip writes `Ø4.8×13` with the grip range
 underneath, or the drill size for rivet nuts. Both lines stay editable.
 
+## Heat-set inserts
+
+Pick the thread and teip writes `M3×5.7` with the hole to print or drill underneath, `hole Ø4.0`.
+The length fills in with the usual insert for that thread; change it for short ones. Hole sizes
+are ruthex's (CNC Kitchen's M3 is the same); a printed hole wants about 0.2 mm more. Both lines
+stay editable.
+
 ## Aluminium profile
 
 T-nuts (hammer, slide-in, spring ball), T-bolts, corner brackets, joining plates, end caps and the
