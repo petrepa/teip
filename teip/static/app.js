@@ -33,8 +33,6 @@ const RIVET_ORDER = ["dome", "countersunk", "large-flange", "nut"];
 const RMAT = { alu: "Alu", steel: "Steel", a2: "A2", plast: "Alu/plast" };  // body material; standard rivets have a steel mandrel
 const RIVET_STD = { dome: { alu: "ISO 15977", steel: "ISO 15979", a2: "ISO 15983" }, countersunk: { alu: "ISO 15978", steel: "ISO 15980", a2: "ISO 15984" } };
 const NUT_DRILL = { M3: 5, M4: 6, M5: 7, M6: 9, M8: 11, M10: 13 };  // hole for round-body rivet nuts
-// ponytail: thread -> [hole Ø, usual length] from the ruthex drill set table (CNC Kitchen's M3 label agrees); other makers differ, edit the subtext. No M8, no verified hole for it
-const HEAT = { M2: [3.2, 4], "M2.5": [4.0, 5.7], M3: [4.0, 5.7], M4: [5.6, 8.1], M5: [6.4, 9.5], M6: [8.0, 12.7] };
 const PROFILE_ORDER = ["t-nut-hammer", "t-nut-slide", "t-nut-spring", "t-bolt", "corner-bracket", "plate-straight", "plate-l", "plate-t", "end-cap", "section"];
 // ponytail: series -> slot width and the threads its T-nuts come in; 20 is B-type (slot 6), 40 the slot-8 kind. Edit the subtext for I-type or slot-10 40s
 const SERIES = { 20: { slot: 6, threads: ["M3", "M4", "M5"] }, 30: { slot: 8, threads: ["M4", "M5", "M6"] }, 40: { slot: 8, threads: ["M4", "M5", "M6", "M8"] }, 45: { slot: 10, threads: ["M5", "M6", "M8"] } };
@@ -123,23 +121,22 @@ function setCategory(cat) {
 }
 $("#cat").onclick = (e) => { if (!e.target.dataset.val) return; setCategory(e.target.dataset.val); if (state.cat === "inserts") insertForm(); if (state.cat === "rivets") rivetForm(); if (state.cat === "profile") profileForm(); };
 
-// ---- heat-set inserts: thread + length -> text + hole size --------------------------------
+// ---- heat-set inserts: thread, outer Ø and length -> M3×D5.0×L3.8 --------------------------------
+const mm = (id) => (+$(id).value || 0).toFixed(1);
 function insertForm(fill = true) {
   const heat = state.ins === "inserts/heat", thr = segVal("ithr");
-  $("#ilenwrap").hidden = !heat;
+  $("#isizewrap").hidden = !heat;
   if (fill && state.ins) {
-    $("#text").value = heat ? `${thr}×${+$("#ilen").value || 0}` : thr;
-    $("#sub").value = heat ? `hole Ø${HEAT[thr][0].toFixed(1)}` : NAMES[state.ins] || "";
+    $("#text").value = heat ? `${thr}×D${mm("#idia")}×L${mm("#ilen")}` : thr;
+    $("#sub").value = heat ? "" : NAMES[state.ins] || "";
   }
   paint();
 }
 function insertHint() {
-  if (state.ins !== "inserts/heat") return "";
-  const thr = segVal("ithr");
-  return `Heat-set insert, ${thr} · hole Ø${HEAT[thr][0].toFixed(1)}, at least ${+$("#ilen").value || 0} mm deep · add 0.2 mm to a printed hole · press in with a soldering iron`;
+  return state.ins === "inserts/heat" ? `Heat-set insert, ${segVal("ithr")} · D = outer diameter, L = length · the hole is a little under D, see the maker's table · press in with a soldering iron` : "";
 }
-$("#ithr").onclick = (e) => { if (!e.target.dataset.val) return; segSet("ithr", e.target.dataset.val); $("#ilen").value = HEAT[e.target.dataset.val][1]; insertForm(); };
-$("#ilen").oninput = () => insertForm();
+$("#ithr").onclick = (e) => { if (!e.target.dataset.val) return; segSet("ithr", e.target.dataset.val); insertForm(); };
+$("#idia").oninput = $("#ilen").oninput = () => insertForm();
 
 // ---- rivets: structured form -> text + subtext ------------------------------------------
 function segVal(id) { return $(`#${id} .on`)?.dataset.val; }

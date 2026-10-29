@@ -36,10 +36,8 @@ underneath, or the drill size for rivet nuts. Both lines stay editable.
 
 ## Heat-set inserts
 
-Pick the thread and teip writes `M3×5.7` with the hole to print or drill underneath, `hole Ø4.0`.
-The length fills in with the usual insert for that thread; change it for short ones. Hole sizes
-are ruthex's (CNC Kitchen's M3 is the same); a printed hole wants about 0.2 mm more. Both lines
-stay editable.
+Pick the thread and type the outer diameter and length off the bag, and teip writes
+`M3×D5.0×L3.8`. The text stays editable.
 
 ## Aluminium profile
 
