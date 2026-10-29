@@ -129,15 +129,17 @@ def _page(printer: Printer, pins: TapePins, width_mm: int, image: Image.Image, o
     n_lines = image.width
     out = bytearray(RASTER_MODE)
     if printer.d460bt:
-        # ptouch-print's verified sequence for this family: ESC i z with no valid flags and n9=2,
-        # margin, compression mode, ESC i K only to chain, raster, ^Z. Never FF, never ESC i M.
-        out += bytes([0x1B, 0x69, 0x7A, 0, 0, width_mm, 0]) + n_lines.to_bytes(4, "little") + bytes([2, 0])
-        if first:  # auto cut: cuts the blank leader off the first label (a peel tab). Pages are sent as
-            # separate jobs; on the later ones this would cut again where the previous page already half-cut.
-            out += b"\x1biM\x40"
+        # PT-E310BT/E510/E560BT raster reference v1.00, section 2.1 and the driver's test page: the same
+        # control codes on every page, n9 = 0 first / 1 middle / 2 last page (2 alone), FF between pages,
+        # ^Z on the last. Auto cut cuts at every label edge, the leader included; the half-cut bit makes
+        # those cuts half cuts, and the no-chain bit adds the feed + full cut after the last page.
+        out += bytes([0x1B, 0x69, 0x7A, PI_WIDTH | PI_RECOVER, 0x09 if o.hires else 0x00, width_mm, 0])
+        out += n_lines.to_bytes(4, "little") + bytes([2 if last else (0 if first else 1), 0])
+        out += b"\x1biM\x40\x1biA\x01"
+        out += bytes([0x1B, 0x69, 0x4B, (half_cut << 2) | ((not o.chain) << 3) | (o.hires << 6)])
+        out += b"\x1bip\x01"  # buffered printing, as the driver sends: a page is complete before it starts
         out += b"\x1bid" + o.margin_dots.to_bytes(2, "little")
         out += b"M\x02" if compress else b"M\x00"
-        out += bytes([0x1B, 0x69, 0x4B, (half_cut << 2) | ((last and not o.chain) << 3) | (o.hires << 6)])
     else:
         out += bytes([0x1B, 0x69, 0x7A, PI_KIND | PI_WIDTH | PI_RECOVER, o.media_type, width_mm, 0])
         out += n_lines.to_bytes(4, "little") + bytes([0 if first else 1, 0])
@@ -154,7 +156,7 @@ def _page(printer: Printer, pins: TapePins, width_mm: int, image: Image.Image, o
                 continue
             line = packbits(line)
         out += b"G" + len(line).to_bytes(2, "little") + line
-    out += PRINT_LAST if (last or printer.d460bt) else PRINT_PAGE
+    out += PRINT_LAST if last else PRINT_PAGE
     return bytes(out)
 
 

@@ -96,17 +96,17 @@ def test_uncompressed_and_hires():
 
 
 def test_e560bt_family_sequence():
-    (job,) = build_jobs(E560, 9, [blank(E560, 9, 3)] * 2)
+    # PT-E310BT/E510/E560BT raster reference v1.00 section 2.1: control codes repeat on every page
+    (job,) = build_jobs(E560, 9, [blank(E560, 9, 3)] * 3)
     assert job.startswith(INVALIDATE + INITIALIZE) and job.count(INITIALIZE) == 1  # one job, pages chained inside it
     pages = job.split(b"\x1bia\x01")[1:]
-    assert len(pages) == 2 and all(p[-1] == 0x1A for p in pages)  # ^Z on every page, never FF
-    assert job.count(b"\x1biM\x40") == 1 and job.index(b"\x1biM\x40") < job.index(b"\x1a") and b"\x1biA" not in job  # leader cut once
-    for p, k in zip(pages, (0x04, 0x0C)):  # first: half cut + chain; last: half cut + no chain
-        assert p[:3] == b"\x1biz" and p[3:5] == b"\x00\x00" and p[5] == 9 and p[7:11] == (3).to_bytes(4, "little")
-        assert p[11] == 2, "n9 must be 2 on this family"
-        assert b"\x1biK" + bytes([k]) in p
+    assert len(pages) == 3 and [p[-1] for p in pages] == [0x0C, 0x0C, 0x1A]  # FF, FF, ^Z
+    for p, n9 in zip(pages, (0, 1, 2)):  # starting page 0, other pages 1, last page 2
+        assert p[:3] == b"\x1biz" and p[3:5] == b"\x84\x00" and p[5] == 9 and p[7:11] == (3).to_bytes(4, "little")
+        assert p[11] == n9
+        assert b"\x1biM\x40\x1biA\x01" in p and b"\x1biK\x0c" in p and b"\x1bip\x01" in p  # auto cut, half cut + no chain on every page
     single = build_job(E560, 9, [blank(E560, 9, 3)])
-    assert b"\x1biK\x0c" in single and single.endswith(b"\x1a")  # half-cut bit on: leading cut becomes a half cut
+    assert single.split(b"\x1biz")[1][8] == 2 and single.endswith(b"\x1a") and b"\x1biK\x0c" in single  # alone: last page
 
 
 def test_jobs_split_by_size():
