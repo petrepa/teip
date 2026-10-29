@@ -34,6 +34,11 @@ leader either. Press the printer's Feed/Cut key to get it out.
 Pick type, material, diameter and length, and teip writes `Ø4.8×13` with the grip range
 underneath, or the drill size for rivet nuts. Both lines stay editable.
 
+## Heat-set inserts
+
+Pick the thread and type the outer diameter and length off the bag, and teip writes
+`M3×D5.0×L3.8`. The text stays editable.
+
 ## Aluminium profile
 
 T-nuts (hammer, slide-in, spring ball), T-bolts, corner brackets, joining plates, end caps and the
