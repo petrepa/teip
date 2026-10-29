@@ -39,7 +39,7 @@ type the size, and print:
 - **Runs where you want.** Straight from Chrome or Edge with the printer plugged into your
   computer, or on a Raspberry Pi next to the printer so any phone on the network can print.
 
-<p align="center"><img src="docs/img/labels.png" width="900" alt="Label strips: M3×8 DIN 912, M4×10 ISO 7380, M5 nyloc, rivet Ø4.8×13 on 12 mm tape; heat insert, WAGO 221, resistors 10 kΩ, M6 washer on 9 mm tape"></p>
+<p align="center"><img src="docs/img/labels.png" width="900" alt="Label strips: M3×8 DIN 912, M4×10 ISO 7380, M5 nyloc, rivet Ø4.8×13 on 12 mm tape; heat insert M3×D5.0×L3.8, WAGO 221, resistors 10 kΩ, M6 washer on 9 mm tape"></p>
 
 > [!WARNING]
 > **Early days, and mostly untested.** teip has printed real labels on one printer, a PT-E560BT
